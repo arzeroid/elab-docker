@@ -12,6 +12,10 @@ chmod go-rwx ${ELAB_DIR}/elabsheet/settings_local.py
 cd ${ELAB_DIR}
 ./install-box.sh
 
+su -c "
+  cd ${ELAB_DIR}
+  ./install-dirs.sh
+" - elab
 chown elab:elab ${ELAB_DIR}/public/media
 
 cat > ${ELAB_DIR}/create_admin.py << EOF
@@ -27,11 +31,14 @@ if "${DJANGO_ADMIN_USER}" != "":
 EOF
 chown elab:elab ${ELAB_DIR}/create_admin.py
 
+while ! nc -z db 3306 > /dev/null; do
+  echo 'Waiting for database to be ready...'
+  sleep 1
+done
+
 su -c "
   . ${HOME_DIR}/virtualenv/elab/bin/activate ve
   cd ${ELAB_DIR}
-  ./install-dirs.sh
-  sleep 20  # wait for db (TODO: write a better script)
   ./manage.py migrate
   ./manage.py collectstatic_js_reverse
   ./manage.py collectstatic --noinput

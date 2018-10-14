@@ -20,7 +20,7 @@ services:
     image: cjaikaeo/elab-base
     container_name: elab-grader
     depends_on:
-      - db
+      - web
     tty: true
     environment:
       TZ: "Asia/Bangkok"
