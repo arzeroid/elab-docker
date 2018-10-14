@@ -16,12 +16,13 @@ Start all the containers with:
 Add the following lines into your Nginx's `server` block:
 
     location = /elab {
-      return 302 /elab/;
+        return 302 /elab/;
     }
     location /elab/ {
-      proxy_pass http://localhost:8888/;
-      proxy_redirect off;
-      proxy_set_header X-Elab-Client-IP $remote_addr;
+        proxy_pass http://localhost:8888/;
+        proxy_redirect off;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Elab-Client-IP $remote_addr;
     }
 
 Restart Nginx, then set your browser to `http://<your-host>/elab/`.
