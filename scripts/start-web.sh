@@ -6,17 +6,26 @@ SETUP_DIR=/root/scripts/output/setup-elab
 
 cp ${SETUP_DIR}/tqfauthen.py ${ELAB_DIR}/lab/backends/
 chown elab:elab ${ELAB_DIR}/lab/backends/tqfauthen.py
-chown elab:elab ${ELAB_DIR}/elabsheet/settings_local.py
 chmod go-rwx ${ELAB_DIR}/elabsheet/settings_local.py
 
 cd ${ELAB_DIR}
 ./install-box.sh
+find . \( \
+    -path ./tmp \
+    -o -path ./sandbox/box \
+    -o -path ./grader/log \
+    -o -path ./tmp \
+    -o -path ./public/media \
+    -o -path ./.git \
+\) -prune -o -print0 | xargs -0 chown elab:elab
+# change grader/log separately to avoid huge list of logs
+chown elab:elab ./grader/log
 
 su -c "
   cd ${ELAB_DIR}
   ./install-dirs.sh
 " - elab
-chown elab:elab ${ELAB_DIR}/public/media
+chown -R elab:elab ${ELAB_DIR}/public
 
 cat > ${ELAB_DIR}/create_admin.py << EOF
 from django.contrib.auth.models import User

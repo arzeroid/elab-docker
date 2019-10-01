@@ -26,3 +26,5 @@ Add the following lines into your Nginx's `server` block:
     }
 
 Restart Nginx, then set your browser to `http://<your-host>/elab/`.
+
+Default Django and MySQL usernames and passwords can be found and configured in the file `docker-compose.yaml`.
