@@ -13,7 +13,7 @@ services:
     volumes:
       - ./src/elabsheet:/home/elab/app/elabsheet
       - ./scripts:/scripts
-    restart: always
+    # restart: always
     entrypoint: "/scripts/start-web.sh"
 
   grader:
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./src/elabsheet:/home/elab/app/elabsheet
       - ./scripts:/scripts
-    restart: always
+    # restart: always
     entrypoint: "/scripts/start-grader.sh"
 
   db:
@@ -39,10 +39,10 @@ services:
       MYSQL_PASSWORD: "elabdbpass"
       MYSQL_DATABASE: "elab"
       MYSQL_ROOT_PASSWORD: "mysql20181008"
-    volumes:
-      - ./db/mysql-datadir:/var/lib/mysql
-      - ./db/etc/custom.cnf:/etc/mysql/conf.d/custom.cnf
-    restart: always
+    # volumes:
+    #   # - ./db/etc/custom.cnf:/etc/mysql/conf.d/custom.cnf
+    #   - ./db/mysql-datadir:/var/lib/mysql
+    # restart: always
 
   nginx:
     image: nginx:1.15.5
@@ -59,4 +59,17 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8888:8000
-    restart: always
+    # restart: always
+
+  nginx-proxy:
+    image: nginx:1.15.5
+    container_name: elab-nginx-proxy
+    depends_on:
+      - nginx
+    environment:
+      TZ: "Asia/Bangkok"
+    volumes:
+      - ./nginx/conf-proxy.d:/etc/nginx/conf.d
+    ports:
+      - 9000:9000
+    # restart: always
